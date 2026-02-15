@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>منيو فرايز داي | تجربة تفاعلية</title>
+    <!-- إضافة أيقونة الموقع (Favicon) -->
+    <link rel="icon" href="assets/ش.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #d62828;
+            --secondary: #f77f00;
+            --accent: #fcbf49;
+            --dark: #2d3436;
+            --bg: #fdfaf0;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--dark);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        header {
+            background: var(--accent);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+        header h1 { margin: 0; font-weight: 900; color: var(--primary); font-size: 1.5rem; }
+        .header-logo { height: 60px; width: auto; }
+
+        .nav-tabs {
+            background: var(--white);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            position: sticky;
+            top: 90px;
+            z-index: 999;
+            border-bottom: 2px solid #eee;
+        }
+        .nav-btn {
+            background: none; border: none; padding: 8px 15px;
+            font-family: 'Cairo'; font-weight: 700; cursor: pointer;
+            border-radius: 20px; transition: var(--transition);
+        }
+        .nav-btn.active { background: var(--primary); color: white; }
+
+        .main { display: flex; max-width: 1200px; margin: 20px auto; padding: 15px; gap: 25px; }
+        .menu { flex: 2; }
+        .category-section { margin-bottom: 40px; scroll-margin-top: 160px; }
+        .category-title { border-right: 6px solid var(--primary); padding-right: 15px; color: var(--primary); font-weight: 900; }
+
+        .menu-item {
+            background: var(--white); border-radius: 20px; padding: 20px;
+            margin-bottom: 15px; display: flex; justify-content: space-between;
+            align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: var(--transition);
+        }
+        .menu-item:hover { transform: scale(1.02); box-shadow: var(--shadow); }
+
+        .qty-controls { display: flex; align-items: center; gap: 15px; background: #f8f8f8; padding: 5px 15px; border-radius: 30px; }
+        .qty-btn { 
+            background: var(--primary); color: white; border: none; 
+            width: 30px; height: 30px; border-radius: 50%; 
+            cursor: pointer; font-weight: 900; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+        .qty-btn:active { transform: scale(0.8); }
+
+        .bread-select { margin-top: 10px; display: flex; gap: 5px; }
+        .bread-opt { font-size: 0.8rem; padding: 4px 10px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; }
+        .bread-opt.active { background: var(--dark); color: white; border-color: var(--dark); }
+
+        .cart {
+            flex: 1; background: #fff; border-radius: 25px; padding: 25px;
+            box-shadow: var(--shadow); height: fit-content; position: sticky; top: 160px;
+        }
+        .cart-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f5f5f5; font-size: 0.9rem; }
+
+        .method-option {
+            display: flex; align-items: center; gap: 10px; padding: 12px;
+            border: 2px solid #f0f0f0; border-radius: 12px; cursor: pointer; margin-bottom: 8px;
+        }
+        .method-option.active { border-color: var(--primary); background: #fff5f5; }
+        .method-option input { display: none; }
+        .bank-info { background: #f8f9fa; padding: 15px; border-radius: 12px; font-size: 0.85rem; display: none; margin-bottom: 15px; border: 1px dashed #ccc; }
+
+        .btn-confirm { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-weight: 800; cursor: pointer; font-family: 'Cairo'; font-size: 1.1rem; }
+        .btn-clear { background: #eee; color: #666; border: none; padding: 10px; width: 100%; border-radius: 12px; margin-top: 10px; cursor: pointer; font-family: 'Cairo'; }
+
+        #toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 10001; }
+        .toast { background: var(--white); padding: 15px 25px; border-radius: 15px; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-right: 6px solid var(--primary); font-weight: 700; animation: slideIn 0.3s forwards; }
+
+        @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        footer { background: var(--dark); color: white; padding: 30px; text-align: center; margin-top: 50px; }
+
+        @media(max-width: 880px) { .main { flex-direction: column; } .cart { position: static; } }
+    </style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<header>
+    <h1>منيو فرايز داي</h1>
+    <img src="assets/ش.png" alt="شعار فرايز داي" class="header-logo" onerror="this.src='https://i.ibb.co/LhYdM9H/image.png'">
+</header>
+
+<div class="nav-tabs">
+    <button class="nav-btn active" onclick="scrollToSec('dishes', this)">الأطباق</button>
+    <button class="nav-btn" onclick="scrollToSec('sandwiches', this)">السندوتشات</button>
+    <button class="nav-btn" onclick="scrollToSec('extras', this)">الإضافات</button>
+    <button class="nav-btn" onclick="scrollToSec('drinks', this)">المشروبات</button>
+</div>
+
+<div class="main">
+    <div class="menu">
+        <section id="dishes" class="category-section">
+            <h2 class="category-title">الأطباق</h2>
+            <div id="list-dishes"></div>
+        </section>
+        <section id="sandwiches" class="category-section">
+            <h2 class="category-title">السندوتشات</h2>
+            <div id="list-sandwiches"></div>
+        </section>
+        <section id="extras" class="category-section">
+            <h2 class="category-title">الإضافات</h2>
+            <div id="list-extras"></div>
+        </section>
+        <section id="drinks" class="category-section">
+            <h2 class="category-title">المشروبات</h2>
+            <div id="list-drinks"></div>
+        </section>
+    </div>
+
+    <div class="cart">
+        <h3 style="margin-top:0;">سلة المشتريات</h3>
+        <div id="cartItems"></div>
+        
+        <div class="payment-methods">
+            <p style="font-weight: 800; margin-bottom: 10px;">طريقة الدفع</p>
+            <label class="method-option active" id="label-cash">
+                <input type="radio" name="pay-method" value="cash" checked onchange="setPay('cash')">
+                <span>كاش عند الاستلام</span>
+            </label>
+            <label class="method-option" id="label-card">
+                <input type="radio" name="pay-method" value="card" onchange="setPay('card')">
+                <span>تحويل بنكي</span>
+            </label>
+            
+            <div id="bankBox" class="bank-info">
+                <strong>مصرف الراجحي</strong><br>
+                الاسم: مؤسسة روز بلاص للتجارة<br>
+                الآيبان: SA3680000540608016153634<br>
+                رقم الحساب: 540000010006086153634
+            </div>
+        </div>
+
+        <div style="margin: 20px 0; display:flex; justify-content: space-between; font-weight: 900; font-size: 1.3rem; color: var(--primary);">
+            <span>الإجمالي</span>
+            <span><span id="totalPrice">0</span> ريال</span>
+        </div>
+
+        <button class="btn-confirm" onclick="checkout()">تأكيد الطلب والدفع</button>
+        <button class="btn-clear" onclick="clearCart()">حذف كل الأصناف</button>
+    </div>
+</div>
+
+<footer>
+    <p>رقم التواصل: 0545740485</p>
+    <p>مؤسسة روز بلاص للتجارة - جميع الحقوق محفوظة 2026</p>
+</footer>
+
+<script>
+const products = [
+    {id:1, name:'فرايز داي صغير', price:5, cat:'dishes'},
+    {id:2, name:'فرايز داي وسط', price:8, cat:'dishes'},
+    {id:3, name:'فرايز داي كبير', price:12, cat:'dishes'},
+    {id:4, name:'كرسبي فرايز داي', price:11, cat:'dishes'},
+    {id:5, name:'تشيكن فرايز داي', price:19, cat:'dishes'},
+    {id:6, name:'سندوتش فرايز داي', price:6, cat:'sandwiches'},
+    {id:7, name:'سندوتش تشيكن فرايز داي', price:13, cat:'sandwiches'},
+    {id:8, name:'جبنة موزاريلا', price:3, cat:'extras'},
+    {id:9, name:'بهارات فرايز داي', price:2, cat:'extras'},
+    {id:10, name:'صوص متنوع كبير', price:2, cat:'extras'},
+    {id:11, name:'صوص متنوع صغير', price:0.5, cat:'extras'},
+    {id:12, name:'كينزا متنوع', price:2, cat:'drinks'},
+    {id:13, name:'ماء صغير', price:0.5, cat:'drinks'}
+];
+
+let cart = [];
+let payMode = 'cash';
+let breadTypes = {};
+
+function showToast(msg) {
+    const container = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = 'toast'; t.innerText = msg;
+    container.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 2000);
+}
+
+function scrollToSec(id, btn) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+
+function setPay(m) {
+    payMode = m;
+    document.getElementById('bankBox').style.display = (m === 'card') ? 'block' : 'none';
+    document.getElementById('label-cash').classList.toggle('active', m === 'cash');
+    document.getElementById('label-card').classList.toggle('active', m === 'card');
+}
+
+function render() {
+    const lists = { dishes: 'list-dishes', sandwiches: 'list-sandwiches', extras: 'list-extras', drinks: 'list-drinks' };
+    products.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'menu-item';
+        let options = p.cat === 'sandwiches' ? `
+            <div class="bread-select">
+                <span class="bread-opt active" onclick="setBread(${p.id}, 'تورتيلا', this)">تورتيلا</span>
+                <span class="bread-opt" onclick="setBread(${p.id}, 'عربي', this)">عربي</span>
+                <span class="bread-opt" onclick="setBread(${p.id}, 'برجر', this)">برجر</span>
+            </div>` : '';
+        
+        div.innerHTML = `
+            <div>
+                <div style="font-weight:900;">${p.name}</div>
+                <div style="color:var(--primary); font-weight:700;">${p.price} ريال</div>
+                ${options}
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="updateQty(${p.id}, -1)">-</button>
+                <span id="qty-${p.id}" style="font-weight:800;">0</span>
+                <button class="qty-btn" onclick="updateQty(${p.id}, 1)">+</button>
+            </div>
+        `;
+        document.getElementById(lists[p.cat]).appendChild(div);
+    });
+}
+
+function setBread(id, val, el) {
+    breadTypes[id] = val;
+    el.parentElement.querySelectorAll('.bread-opt').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function updateQty(id, delta) {
+    const p = products.find(x => x.id === id);
+    let bread = p.cat === 'sandwiches' ? (breadTypes[id] || 'تورتيلا') : null;
+    let item = cart.find(c => c.id === id && c.bread === bread);
+
+    if (delta > 0) {
+        if (!item) {
+            cart.push({...p, qty: 1, bread: bread});
+            showToast("تمت إضافة " + p.name);
+        } else {
+            item.qty++;
+            showToast("تمت زيادة كمية " + p.name);
+        }
+    } else {
+        if (item) {
+            item.qty--;
+            if (item.qty <= 0) {
+                cart = cart.filter(c => !(c.id === id && c.bread === bread));
+                showToast("تم حذف " + p.name);
+            } else {
+                showToast("تم تقليل كمية " + p.name);
+            }
+        }
+    }
+    updateUI();
+}
+
+function updateUI() {
+    const container = document.getElementById('cartItems');
+    const totalEl = document.getElementById('totalPrice');
+    let total = 0;
+
+    products.forEach(p => {
+        let count = 0;
+        cart.filter(c => c.id === p.id).forEach(c => count += c.qty);
+        document.getElementById(`qty-${p.id}`).innerText = count;
+    });
+
+    if(cart.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#999;">السلة فارغة</p>';
+        totalEl.innerText = '0';
+        return;
+    }
+
+    container.innerHTML = cart.map((c, idx) => {
+        total += c.price * c.qty;
+        return `<div class="cart-item">
+            <span>${c.name} ${c.bread ? '('+c.bread+')' : ''} x${c.qty}</span>
+            <span style="font-weight:700;">${(c.price * c.qty).toFixed(2)} ريال</span>
+        </div>`;
+    }).join('');
+    totalEl.innerText = total.toFixed(2);
+}
+
+function clearCart() {
+    if (cart.length === 0) return;
+    cart = [];
+    updateUI();
+    showToast("تم إفراغ السلة بالكامل");
+}
+
+function checkout() {
+    if(cart.length === 0) { showToast("السلة فارغة!"); return; }
+    
+    let txt = `طلب جديد من فرايز داي\n`;
+    txt += `--------------------------\n`;
+    cart.forEach(c => txt += `- ${c.name} ${c.bread ? '['+c.bread+']' : ''} (عدد: ${c.qty}) = ${(c.price * c.qty).toFixed(2)} ريال\n`);
+    txt += `--------------------------\n`;
+    txt += `الاجمالي: ${document.getElementById('totalPrice').innerText} ريال\n`;
+    txt += `طريقة الدفع: ${payMode === 'cash' ? 'كاش عند الاستلام' : 'تحويل بنكي'}\n`;
+    
+    if(payMode === 'card') {
+        txt += `يرجى إرفاق صورة إيصال التحويل مع هذه الرسالة.\n`;
+    }
+    
+    txt += `--------------------------\n`;
+    txt += `تنبيه: أي تعديل على هذه الرسالة قد يعرضك للمساءلة القانونية.\n`;
+    txt += `مؤسسة روز بلاص للتجارة`;
+
+    window.open(`https://wa.me/966502069445?text=${encodeURIComponent(txt)}`);
+}
+
+render();
+updateUI();
+</script>
+</body>
+</html>
