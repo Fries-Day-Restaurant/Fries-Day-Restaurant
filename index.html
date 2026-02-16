@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>منيو فرايز داي</title>
-    <!-- إضافة أيقونة الموقع (Favicon) -->
     <link rel="icon" href="assets/ش.png" type="image/png">
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -94,14 +93,8 @@
         }
         .cart-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f5f5f5; font-size: 0.9rem; }
 
-        .method-option {
-            display: flex; align-items: center; gap: 10px; padding: 12px;
-            border: 2px solid #f0f0f0; border-radius: 12px; cursor: pointer; margin-bottom: 8px;
-        }
-        .method-option.active { border-color: var(--primary); background: #fff5f5; }
-        .method-option input { display: none; }
-        .bank-info { background: #f8f9fa; padding: 15px; border-radius: 12px; font-size: 0.85rem; display: none; margin-bottom: 15px; border: 1px dashed #ccc; }
-
+        .bank-info { background: #f8f9fa; padding: 15px; border-radius: 12px; font-size: 0.85rem; display: block; margin-bottom: 15px; border: 1px dashed #ccc; }
+        
         .btn-confirm { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-weight: 800; cursor: pointer; font-family: 'Cairo'; font-size: 1.1rem; }
         .btn-clear { background: #eee; color: #666; border: none; padding: 10px; width: 100%; border-radius: 12px; margin-top: 10px; cursor: pointer; font-family: 'Cairo'; }
 
@@ -157,20 +150,14 @@
         
         <div class="payment-methods">
             <p style="font-weight: 800; margin-bottom: 10px;">طريقة الدفع</p>
-            <label class="method-option active" id="label-cash">
-                <input type="radio" name="pay-method" value="cash" checked onchange="setPay('cash')">
-                <span>كاش عند الاستلام</span>
-            </label>
-            <label class="method-option" id="label-card">
-                <input type="radio" name="pay-method" value="card" onchange="setPay('card')">
-                <span>تحويل بنكي</span>
-            </label>
-            
             <div id="bankBox" class="bank-info">
-                <strong>مصرف الراجحي</strong><br>
+                <strong>تحويل بنكي - مصرف الراجحي</strong><br>
                 الاسم: مؤسسة روز بلاص للتجارة<br>
                 الآيبان: SA3680000540608016153634<br>
                 رقم الحساب: 540000010006086153634
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; color: var(--primary); font-weight: 800;">
+                     يرجى إرفاق صورة إيصال التحويل مع الطلب
+                </div>
             </div>
         </div>
 
@@ -179,14 +166,14 @@
             <span><span id="totalPrice">0</span> ريال</span>
         </div>
 
-        <button class="btn-confirm" onclick="checkout()">تأكيد الطلب والدفع</button>
+        <button class="btn-confirm" onclick="checkout()">تأكيد الطلب عبر واتساب</button>
         <button class="btn-clear" onclick="clearCart()">حذف كل الأصناف</button>
     </div>
 </div>
 
 <footer>
     <p>رقم التواصل: 0545740485</p>
-    <p>مؤسسة روز بلاص للتجارة - جميع الحقوق محفوظة 2026</p>
+    <p>جميع الحقوق محفوظة 2026-فريز داي</p>
 </footer>
 
 <script>
@@ -207,7 +194,6 @@ const products = [
 ];
 
 let cart = [];
-let payMode = 'cash';
 let breadTypes = {};
 
 function showToast(msg) {
@@ -222,13 +208,6 @@ function scrollToSec(id, btn) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-}
-
-function setPay(m) {
-    payMode = m;
-    document.getElementById('bankBox').style.display = (m === 'card') ? 'block' : 'none';
-    document.getElementById('label-cash').classList.toggle('active', m === 'cash');
-    document.getElementById('label-card').classList.toggle('active', m === 'card');
 }
 
 function render() {
@@ -334,23 +313,16 @@ function checkout() {
     cart.forEach(c => txt += `- ${c.name} ${c.bread ? '['+c.bread+']' : ''} (عدد: ${c.qty}) = ${(c.price * c.qty).toFixed(2)} ريال\n`);
     txt += `--------------------------\n`;
     txt += `الاجمالي: ${document.getElementById('totalPrice').innerText} ريال\n`;
-    txt += `طريقة الدفع: ${payMode === 'cash' ? 'كاش عند الاستلام' : 'تحويل بنكي'}\n`;
-    
-    if(payMode === 'card') {
-        txt += `يرجى إرفاق صورة إيصال التحويل مع هذه الرسالة.\n`;
-    }
-    
-    txt += `--------------------------\n`;
-    txt += `تنبيه: أي تعديل على هذه الرسالة قد يعرضك للمساءلة القانونية.\n`;
-    txt += `مؤسسة روز بلاص للتجارة`;
+    txt += `طريقة الدفع: تحويل بنكي\n`;
+    txt += `طريقة الاستلام: استلام في المطعم\n`;
+    txt += `موقع المطعم: https://maps.app.goo.gl/BTRb8fPN7b2KqTyC6\n`;
+    txt += `--------------------------`;
 
-    window.open(`https://wa.me/966555240263?text=${encodeURIComponent(txt)}`);
+    window.open(`https://wa.me/966545740485?text=${encodeURIComponent(txt)}`);
 }
 
 render();
 updateUI();
 </script>
 </body>
-
 </html>
-
