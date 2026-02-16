@@ -88,9 +88,8 @@
         .bread-opt.active { background: var(--dark); color: white; border-color: var(--dark); }
 
         .extra-options { margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 10px; width: 100%; }
-        .option-group { margin-bottom: 10px; }
-        .option-title { font-size: 0.8rem; font-weight: 800; color: #666; display: block; margin-bottom: 5px; }
-        .custom-select { width: 100%; padding: 5px; border-radius: 8px; border: 1px solid #ddd; font-family: 'Cairo'; font-size: 0.8rem; }
+        .option-title { font-size: 0.8rem; font-weight: 800; color: #666; display: block; margin-bottom: 5px; margin-top: 10px; }
+        
         .veggie-choice { display: flex; gap: 10px; flex-wrap: wrap; }
         .veggie-choice label { font-size: 0.75rem; display: flex; align-items: center; gap: 4px; cursor: pointer; }
 
@@ -102,8 +101,21 @@
         .cart-item-row { display: flex; justify-content: space-between; width: 100%; }
         .cart-item-ext { font-size: 0.75rem; color: #888; margin-top: 2px; }
 
-        .bank-info { background: #f8f9fa; padding: 15px; border-radius: 12px; font-size: 0.85rem; display: block; margin-bottom: 15px; border: 1px dashed #ccc; }
-        
+        /* ستايل حقل الاسم */
+        .customer-field { margin: 15px 0; border-top: 1px solid #eee; padding-top: 15px; }
+        .customer-field label { display: block; font-weight: 800; margin-bottom: 8px; font-size: 0.9rem; }
+        .customer-field input { 
+            width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 12px; 
+            font-family: 'Cairo'; font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.3s;
+        }
+        .customer-field input:focus { border-color: var(--primary); }
+
+        .payment-methods { margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 10px; }
+        .pay-opt { font-size: 0.9rem; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+
+        .bank-info { background: #f8f9fa; padding: 15px; border-radius: 12px; font-size: 0.85rem; display: none; margin-bottom: 15px; border: 1px dashed #ccc; line-height: 1.6; }
+        .red-alert { color: #d62828; font-weight: 800; display: block; margin-top: 8px; border-top: 1px solid #ddd; padding-top: 5px; text-align: center; }
+
         .btn-confirm { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-weight: 800; cursor: pointer; font-family: 'Cairo'; font-size: 1.1rem; }
         .btn-clear { background: #eee; color: #666; border: none; padding: 10px; width: 100%; border-radius: 12px; margin-top: 10px; cursor: pointer; font-family: 'Cairo'; }
 
@@ -157,16 +169,29 @@
         <h3 style="margin-top:0;">سلة المشتريات</h3>
         <div id="cartItems"></div>
         
+        <!-- حقل اسم العميل الجديد -->
+        <div class="customer-field">
+            <label for="custName">اسم العميل (إجباري):</label>
+            <input type="text" id="custName" placeholder="اكتب اسمك هنا...">
+        </div>
+
         <div class="payment-methods">
             <p style="font-weight: 800; margin-bottom: 10px;">طريقة الدفع</p>
+            <label class="pay-opt">
+                <input type="radio" name="payType" value="الدفع عند الاستلام" checked onchange="toggleBank(false)">
+                الدفع عند الاستلام
+            </label>
+            <label class="pay-opt">
+                <input type="radio" name="payType" value="تحويل بنكي" onchange="toggleBank(true)">
+                تحويل بنكي
+            </label>
+
             <div id="bankBox" class="bank-info">
                 <strong>تحويل بنكي - مصرف الراجحي</strong><br>
                 الاسم: مؤسسة روز بلاص للتجارة<br>
                 الآيبان: SA3680000540608016153634<br>
-                رقم الحساب: 540000010006086153634
-                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; color: var(--primary); font-weight: 800;">
-                     يرجى إرفاق صورة إيصال التحويل مع الطلب
-                </div>
+                رقم الحساب: 540000010006086153634<br>
+                <span class="red-alert">يرجى إرفاق صورة إيصال التحويل مع الطلب</span>
             </div>
         </div>
 
@@ -182,7 +207,7 @@
 
 <footer>
     <p>رقم التواصل: 0545740485</p>
-    <p>جميع الحقوق محفوظة 2026-فريز داي</p>
+    <p>جميع الحقوق محفوظة 2026-فرايز داي</p>
 </footer>
 
 <script>
@@ -192,9 +217,8 @@ const products = [
     {id:3, name:'فرايز داي كبير', price:12, cat:'dishes'},
     {id:4, name:'كرسبي فرايز داي', price:11, cat:'dishes'},
     {id:5, name:'تشيكن فرايز داي', price:19, cat:'dishes'},
-    {id:6, name:'سندوتش فرايز داي', price:6, cat:'sandwiches'},
-    {id:7, name:'سندوتش تشيكن فرايز داي', price:13, cat:'sandwiches'},
-    // تم حذف جبنة موزاريلا من هنا بناءً على طلبك
+    {id:6, name:'فرايز داي', price:6, cat:'sandwiches'},
+    {id:7, name:'تشيكن فرايز داي', price:13, cat:'sandwiches'},
     {id:9, name:'بهارات فرايز داي', price:2, cat:'extras'},
     {id:10, name:'صوص متنوع كبير', price:2, cat:'extras'},
     {id:11, name:'صوص متنوع صغير', price:0.5, cat:'extras'},
@@ -204,6 +228,10 @@ const products = [
 
 let cart = [];
 let breadTypes = {};
+
+function toggleBank(show) {
+    document.getElementById('bankBox').style.display = show ? 'block' : 'none';
+}
 
 function showToast(msg) {
     const container = document.getElementById('toast-container');
@@ -249,23 +277,22 @@ function render() {
                     </div>
 
                     <span class="option-title">إضافة جبنة (+3 ريال):</span>
-                    <select class="custom-select cheese-${p.id}">
-                        <option value="">بدون جبنة</option>
-                        <option value="موزاريلا">موزاريلا</option>
-                        <option value="شيدر">شيدر</option>
-                        <option value="ميكس">ميكس</option>
-                    </select>
+                    <div class="veggie-choice">
+                        <label><input type="checkbox" class="cheese-${p.id}" value="موزاريلا"> موزاريلا</label>
+                        <label><input type="checkbox" class="cheese-${p.id}" value="شيدر"> شيدر</label>
+                        <label><input type="checkbox" class="cheese-${p.id}" value="ميكس"> ميكس</label>
+                    </div>
 
                     <span class="option-title">الصوص:</span>
-                    <select class="custom-select sauce-${p.id}">
-                        <option value="صوص فرايز داي">صوص فرايز داي</option>
-                        <option value="كتشب">كتشب</option>
-                        <option value="مايونيز">مايونيز</option>
-                        <option value="شطة">شطة</option>
-                        <option value="ثوم">ثوم</option>
-                        <option value="كل شي">كل شي</option>
-                        <option value="كل شي بدون شطة">كل شي بدون شطة</option>
-                    </select>
+                    <div class="veggie-choice">
+                        ${(p.id === 1 || p.id === 2) ? '' : '<label><input type="checkbox" class="sauce-' + p.id + '" value="صوص فرايز داي"> صوص فرايز داي</label>'}
+                        <label><input type="checkbox" class="sauce-${p.id}" value="ثوم"> ثوم</label>
+                        <label><input type="checkbox" class="sauce-${p.id}" value="شطة"> شطة</label>
+                        <label><input type="checkbox" class="sauce-${p.id}" value="كتشب"> كتشب</label>
+                        <label><input type="checkbox" class="sauce-${p.id}" value="مايونيز"> مايونيز</label>
+                        <label><input type="checkbox" class="sauce-${p.id}" value="كل شي"> كل شي</label>
+                        <label><input type="checkbox" class="sauce-${p.id}" value="كل شي بدون شطة"> كل شي بدون شطة</label>
+                    </div>
                 </div>`;
         }
         
@@ -294,25 +321,25 @@ function setBread(id, val, el) {
 function updateQty(id, delta) {
     const p = products.find(x => x.id === id);
     let itemExtra = 0;
-    let selectedCheese = "";
-    let selectedSauce = "";
+    let selectedCheese = [];
+    let selectedSauce = [];
     let selectedVeggies = [];
     let bread = (p.cat === 'sandwiches') ? (breadTypes[id] || 'تورتيلا') : null;
 
     if (p.cat === 'sandwiches' || p.cat === 'dishes') {
-        const cheeseEl = document.querySelector(`.cheese-${id}`);
-        const sauceEl = document.querySelector(`.sauce-${id}`);
+        const cheeseEls = document.querySelectorAll(`.cheese-${id}:checked`);
+        const sauceEls = document.querySelectorAll(`.sauce-${id}:checked`);
         const vegEls = document.querySelectorAll(`.veg-${id}:checked`);
         
-        if (cheeseEl && cheeseEl.value) {
-            selectedCheese = cheeseEl.value;
+        if (cheeseEls.length > 0) {
+            cheeseEls.forEach(c => selectedCheese.push(c.value));
             itemExtra = 3; 
         }
-        if (sauceEl) selectedSauce = sauceEl.value;
+        sauceEls.forEach(s => selectedSauce.push(s.value));
         vegEls.forEach(v => selectedVeggies.push(v.value));
     }
 
-    let configKey = `${id}-${bread}-${selectedCheese}-${selectedSauce}-${selectedVeggies.join(',')}`;
+    let configKey = `${id}-${bread}-${selectedCheese.join(',')}-${selectedSauce.join(',')}-${selectedVeggies.join(',')}`;
     let item = cart.find(c => c.configKey === configKey);
 
     if (delta > 0) {
@@ -321,9 +348,9 @@ function updateQty(id, delta) {
                 ...p, 
                 qty: 1, 
                 bread: bread, 
-                cheese: selectedCheese, 
-                sauce: selectedSauce, 
-                veggies: selectedVeggies,
+                cheese: selectedCheese.join(' + '), 
+                sauce: selectedSauce.join(' + '), 
+                veggies: selectedVeggies.join(' + '),
                 extraPrice: itemExtra,
                 configKey: configKey
             });
@@ -333,8 +360,9 @@ function updateQty(id, delta) {
             showToast("تمت زيادة كمية " + p.name);
         }
     } else {
-        let itemToRemove = cart.filter(c => c.id === id).pop();
-        if (itemToRemove) {
+        let matchingItems = cart.filter(c => c.id === id);
+        if (matchingItems.length > 0) {
+            let itemToRemove = matchingItems[matchingItems.length - 1];
             itemToRemove.qty--;
             if (itemToRemove.qty <= 0) {
                 cart = cart.filter(c => c !== itemToRemove);
@@ -371,7 +399,7 @@ function updateUI() {
         
         let details = [];
         if (c.bread) details.push(`خبز: ${c.bread}`);
-        if (c.veggies && c.veggies.length) details.push(`خضار: ${c.veggies.join('، ')}`);
+        if (c.veggies) details.push(`خضار: ${c.veggies}`);
         if (c.cheese) details.push(`جبنة: ${c.cheese}`);
         if (c.sauce) details.push(`صوص: ${c.sauce}`);
 
@@ -389,6 +417,7 @@ function updateUI() {
 function clearCart() {
     if (cart.length === 0) return;
     cart = [];
+    document.getElementById('custName').value = '';
     updateUI();
     showToast("تم إفراغ السلة بالكامل");
 }
@@ -396,13 +425,25 @@ function clearCart() {
 function checkout() {
     if(cart.length === 0) { showToast("السلة فارغة!"); return; }
     
-    let txt = `طلب جديد من فرايز داي\n`;
+    // التحقق من الاسم
+    const nameInput = document.getElementById('custName');
+    const customerName = nameInput.value.trim();
+    if (!customerName) {
+        showToast("يرجى إدخال اسم العميل!");
+        nameInput.focus();
+        nameInput.style.borderColor = 'var(--primary)';
+        return;
+    }
+
+    const payType = document.querySelector('input[name="payType"]:checked').value;
+
+    let txt = `طلب جديد من العميل: *${customerName}*\n`;
     txt += `--------------------------\n`;
     cart.forEach(c => {
         let itemTotal = (c.price + (c.extraPrice || 0)) * c.qty;
         txt += `- ${c.name} (عدد: ${c.qty})\n`;
         if (c.bread) txt += `  الخبز: ${c.bread}\n`;
-        if (c.veggies && c.veggies.length) txt += `  الخضار: ${c.veggies.join('، ')}\n`;
+        if (c.veggies) txt += `  الخضار: ${c.veggies}\n`;
         if (c.cheese) txt += `  الجبنة: ${c.cheese}\n`;
         if (c.sauce) txt += `  الصوص: ${c.sauce}\n`;
         txt += `  السعر: ${itemTotal.toFixed(2)} ريال\n`;
@@ -410,7 +451,7 @@ function checkout() {
     });
     txt += `--------------------------\n`;
     txt += `الاجمالي: ${document.getElementById('totalPrice').innerText} ريال\n`;
-    txt += `طريقة الدفع: تحويل بنكي\n`;
+    txt += `طريقة الدفع: ${payType}\n`;
     txt += `طريقة الاستلام: استلام في المطعم\n`;
     txt += `موقع المطعم: https://maps.app.goo.gl/BTRb8fPN7b2KqTyC6\n`;
     txt += `--------------------------`;
